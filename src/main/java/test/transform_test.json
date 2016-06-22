@@ -1,0 +1,40 @@
+{
+  "logs": [
+    {
+      "id": "12345",
+      "email": "a@me.com",
+      "message": "successfully handled skipped operation."
+    },
+    {
+      "id": "23454",
+      "email": "a@me.com",
+      "message": "successfully handled skipped operation."
+    },
+    {
+      "id": "54364",
+      "email": "a@me.com",
+      "message": "successfully handled skipped operation."
+    },
+    {
+      "id": "23364",
+      "email": "a@me.com",
+      "message": "successfully handled skipped operation."
+    },
+    {
+      "id": "23454",
+      "email": "a@me.com",
+      "message": "successfully handled skipped operation."
+    },
+    {
+      "id": "09876",
+      "email": "b@dropbox.net",
+      "message": "successfully handled skipped operation."
+    },
+    {
+      "id": "09876",
+      "email": "c@bettercloud.com",
+      "message": "successfully handled skipped operation."
+    }
+  ],
+  "id": "56f83bed-3705-4115-9067-73930cbecbc0"
+}

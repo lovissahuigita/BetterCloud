@@ -1,0 +1,91 @@
+*******************************************************************************
+                                   INSTRUCTION
+*******************************************************************************
+
+Overview:
+Sequences of work processed by data streaming architectures can be broken up
+into three essential steps:
+
+1. Consume
+2. Transform
+3. Produce
+
+The Consume step is simply to read in a message of a specified format into the
+work processor.  The Transform step contains the bulk of the business logic:
+using the consumed data as input, this step acts on the data, eventually
+transforming it into resulting output of a specific format.  The final
+Produce step writes out the output to a destination.
+
+Exercise:
+For this exercise, you will find a "logs" zipped folder at the following
+location:
+
+https://drive.google.com/file/d/0Bx_STuWWCFdaNVRBZFFxckRGdUE/view?usp=sharing
+
+The unzipped folder contains many logs_xx.json files of the following format:
+
+{
+    "logs":[
+        {
+            "id":"e68c089d-0215-459f-b245-b520949b10d1",
+            "email":"first.user@domain.com",
+            "message":"successfully completed processing after 5 milliseconds"
+        },
+        {
+            "id":"e8bc9136-1ac9-4176-b0f8-a0b36a149a08",
+            "email":"another.user@example.com",
+            "message":"failed to process due to datastore exception"
+        },
+        {
+            "id":"37f6c3b8-dc81-4921-b2d0-5f5d69f12ef8",
+            "email":"first.user@domain.com",
+            "message":"failed to process due to datastore exception"
+        }
+    ]
+}
+
+After downloading and unzipping the logs folder containing "logs" files from
+the link provided above, for each file:
+1. Read in the json content from the file.
+2. Produce the json content as a log message.
+3. Consume that json message.
+4. Transform the json message into a tally of all the number of logs for each
+unique email address.
+5. Produce a message that includes that tally. Here is an example of a tally
+message:
+
+{
+    "tally":[
+        {
+            "email":"first.user@domain.com",
+            "total":2
+        },
+        {
+            "email":"another.user@example.com",
+            "total":1
+        }
+    ]
+}
+
+6. Maintain a global tally of all log counts for each unique email address
+7. Consume each tally message produced by step 2.
+8. Update the global tally according to the additions included in the message.
+9. Print out the updated global tally.
+
+Other Notes:
+You are free to use (or not use) whatever 3rd party classes or libraries you
+wish to assist with this exercise.  Regarding consuming and producing JSON
+formatted data, it is likely you will want to use either of the following
+JSON parsers:
+
+http://search.maven.org/#artifactdetails%7Ccom.google.code.
+    gson%7Cgson%7C2.6.2%7Cjar
+http://search.maven.org/#artifactdetails%7Ccom.fasterxml.jackson.
+    core%7Cjackson-core%7C2.7.3%7Cbundle
+
+And that’s it! When you are all done, zip everything up and upload the zip to
+Google Drive and share it with me.  Please make sure I can share it with others
+(allow editors to share).  Please also step back and ask yourself if your
+submission demonstrates a strong understanding of OO Design. Sometimes we race
+so fast to the problem, we don't step back and refactor to use the right OO
+design approach, so check for that.

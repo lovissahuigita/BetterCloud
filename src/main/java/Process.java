@@ -16,6 +16,9 @@ import org.json.simple.parser.ParseException;
  * BS Computer Science May 2016
  * Georgia Institute of Technology
  *
+ * BetterCloud Programming Exercise
+ * @author Lovissa Winyoto
+ * @version 1.0
  */
 public class Process {
 
@@ -34,7 +37,7 @@ public class Process {
         JSONObject toReturn = null;
         try {
             toReturn = (JSONObject) parser.parse(new FileReader(fileName));
-        } catch (FileNotFoundException e) { //TODO: Check this
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
@@ -58,50 +61,60 @@ public class Process {
      * @return the resulting JSONObject from the toUpdate map
      */
     public static JSONObject transformer(JSONObject toTransform) {
+        if (toTransform instanceof JSONObject) {
+            JSONArray logs = (JSONArray) toTransform.get("logs");
 
-        JSONArray logs = (JSONArray) toTransform.get("logs");
+            /* A map of log entries, key: email */
+            Map<String, List<Log>> toUpdate = new HashMap<String, List<Log>>();
+            Log log;
+            String msg, email, logID;
 
-        /* A map of log entries, key: email */
-        Map<String, List<Log>> toUpdate = new HashMap<String, List<Log>>();
-        Log log;
-        String msg, email, logID;
+            /* Iterates through the JSONArray log and put the updates on the map */
+            for (int i = 0; i < logs.size(); i++) {
 
-        /* Iterates through the JSONArray log and put the updates on the map */
-        for (int i = 0; i < logs.size(); i++) {
-            /* Gets the values of each log from the JSON file */
-            msg = (String) ((JSONObject) logs.get(i)).get("message");
-            email = (String) ((JSONObject) logs.get(i)).get("email");
-            logID = (String) ((JSONObject) logs.get(i)).get("id");
+                /* Gets the values of each log from the JSON file */
+                try {
+                    msg = (String) ((JSONObject) logs.get(i)).get("message");
+                    email = (String) ((JSONObject) logs.get(i)).get("email");
+                    logID = (String) ((JSONObject) logs.get(i)).get("id");
+                } catch (NullPointerException e) {
+                    throw new IllegalArgumentException("Incorrect Input " +
+                            "File: JSONObject has different format");
+                }
 
-            /* Creates a new Log object */
-            log = new Log(logID, email, msg, msg.contains(successMsg));
+                /* Creates a new Log object */
+                log = new Log(logID, email, msg, msg.contains(successMsg));
 
-            /* Updates the tally of unique email count */
-            if (toUpdate.containsKey(email)) { /* if email already exists */
-                toUpdate.get(email).add(log);
-            } else {
-                /* if new unique email is found */
-                List<Log> logList = new ArrayList<Log>();
-                logList.add(log);
-                toUpdate.put(email, logList);
+                /* Updates the tally of unique email count */
+                if (toUpdate.containsKey(email)) { /* if email already exists */
+                    toUpdate.get(email).add(log);
+                } else {
+                    /* if new unique email is found */
+                    List<Log> logList = new ArrayList<Log>();
+                    logList.add(log);
+                    toUpdate.put(email, logList);
+                }
             }
-        }
 
-        /* process the data to look like the sample output file */
-        JSONArray arr = new JSONArray();
-        Iterator iter = toUpdate.entrySet().iterator();
-        JSONObject obj;
-        while (iter.hasNext()) {
-            Map.Entry pair = (Map.Entry) iter.next();
-            obj = new JSONObject();
-            obj.put("email", pair.getKey());
-            obj.put("total", ((ArrayList<Log>) pair.getValue()).size());
-            arr.add(obj);
+            /* process the data to look like the sample output file */
+            JSONArray arr = new JSONArray();
+            Iterator iter = toUpdate.entrySet().iterator();
+            JSONObject obj;
+            while (iter.hasNext()) {
+                Map.Entry pair = (Map.Entry) iter.next();
+                obj = new JSONObject();
+                obj.put("email", pair.getKey());
+                obj.put("total", ((ArrayList<Log>) pair.getValue()).size());
+                arr.add(obj);
 //                iter.remove(); // avoids a ConcurrentModificationException //TODO: check what this is
+            }
+            JSONObject toReturn = new JSONObject();
+            toReturn.put("tally", arr);
+            return toReturn;
+        } else {
+            throw new IllegalArgumentException("Incorrect Input File:" +
+                    " JSONObject input is required");
         }
-        JSONObject toReturn = new JSONObject();
-        toReturn.put("tally", arr);
-        return toReturn;
     }
 
     /**
@@ -112,15 +125,20 @@ public class Process {
      * @param destFileName Destination file directory
      */
     public static void producer(JSONObject toProduce, String destFileName) {
-        try {
-            FileWriter file = new FileWriter(destFileName);
-            toProduce.writeJSONString(file);
-            file.flush();
-            file.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (toProduce instanceof JSONObject) {
+            try {
+                FileWriter file = new FileWriter(destFileName);
+                toProduce.writeJSONString(file);
+                file.flush();
+                file.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            throw new IllegalArgumentException("Incorrect Input File:" +
+                    " JSONObject input is required");
         }
     }
 }
